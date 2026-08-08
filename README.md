@@ -4,6 +4,9 @@ Este projeto é um layout de site simples em HTML, CSS e JavaScript.
 
 ![Ilustração do site](nfts.png)
 
+## Site usado como base
+![Ilustração do site](site_base.jpeg)
+
 ## Estrutura
 
 - index.html: estrutura principal da página

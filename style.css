@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family: Arial, sans-serif;
+    background-color: #121411 ;
+    min-height: 100vh;
+}
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff;
+    padding: 25px 20px;
+}
+nav .menu ul{
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+nav .menu ul li a{
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    transition: 0.3s;
+}
+nav .search{
+    display: flex;
+    gap: 10px;
+}
+nav .search .search-btn{
+    background: linear-gradient(
+    90deg,
+    #40D15C 0%,
+    #e9fd0b 100%
+);
+    color: #100f0f;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius:20px;
+}
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: min(1200px, 100%);
+    max-width: 1200px;
+    min-height: calc(100vh - 100px);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.nfts-collections{
+    width: 100%;
+    padding: 2rem 0;
+}
+.triangulo-nfts-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 3rem 0;
+    min-height: calc(100vh - 100px);
+}
+.triangulo-nfts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(540px, 100%);
+    max-width: 600px;
+    position: relative;
+    min-height: 420px;
+}
+.triangulo-nfts-mensagem {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: min(540px, 100%);
+    max-width: 600px;
+    color: #fff;
+    margin-bottom: 185px;
+}
+
+.mensagem-pequena {
+    margin: 17px 0px;
+    line-height: 22px;
+}
+.logo h1 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+
+    background-image: linear-gradient(
+        90deg,
+        #40D15C 0%,
+        #e9fd0b 100%
+    );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.triangulo-nfts-mensagem .mensagem-grande h2 {
+    font-family: 'Inter', sans-serif;
+
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-size: 50px;
+
+    background-image: linear-gradient(
+        90deg,
+        #40D15C 0%,
+        #e9fd0b 100%
+    );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.mensagem-botao {
+    margin-top: 10px;
+}
+.mensagem-botao button {
+
+    color: #100f0f;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius:3px;
+}
+.mensagem-botao .botao1 {
+    background: linear-gradient(
+        90deg,
+        #40D15C 0%,
+        #e9fd0b 100%
+    );
+}
+.mensagem-botao .botao2 {
+    position: relative;
+
+    background: transparent;
+    border: none;
+
+    color: transparent;
+
+    background-image: linear-gradient(
+        90deg,
+        #40D15C,
+        #e9fd0b
+    );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    padding: 10px 25px;
+    border-radius: 3px;
+}
+
+.mensagem-botao .botao2::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    padding: 2px;
+
+    border-radius: inherit;
+
+    background: linear-gradient(
+        90deg,
+        #40D15C,
+        #e9fd0b
+    );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    pointer-events: none;
+}
+
+.triangulo {
+    width: 400px;
+    height: 400px;
+
+    background: linear-gradient(
+        90deg,
+        #40D15C 0%,
+        #e9fd0b 100%
+    );
+
+    clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        50% 100%
+    );
+
+    transform: rotate(-11deg);
+
+    position: relative;
+     z-index: 1;
+}
+
+.triangulo::after {
+    content: "";
+    position: absolute;
+    width: 388px;
+    height: 390px;
+    background: #121411 ;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    top: 2px;
+    left: 6px;
+     z-index: 0;
+}
+
+.cards {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+}
+
+.card {
+    position: absolute;
+    width: clamp(110px, 15vw, 145px);
+    height: clamp(160px, 22vw, 200px);
+    border-radius: 12px;
+    background: linear-gradient(
+        135deg,
+        #40D15C,
+        #e9fd0b
+    );
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card1 {
+    top: 42%;
+    left: 37%;
+    transform: translate(-58%, -20%) rotate(320deg);
+}
+
+.card2 {
+    top: 10%;
+    left: 63%;
+    transform: translate(-50%, 0) rotate(23deg);
+}
+
+.card3 {
+    top: -13%;
+    left: 41%;
+    transform: translate(-59%, 5%) rotate(-23deg);
+}
+.card-img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.fita{
+    background: linear-gradient(
+        135deg,
+        #0c461897,
+        #ecfc402d
+    );
+    width: 100%;
+    height: 50px;
+    position: absolute;
+    bottom: 144px;
+    margin-bottom: -59px;
+    transform: rotate(-4deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: #100f0f;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.fita-track {
+    display: flex;
+    gap: 3rem;
+    min-width: max-content;
+}
+
+.fita-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.estrela {
+    font-size: 1.2rem;
+    background: linear-gradient(
+        135deg,
+        #0c461897,
+        #ecfc408e
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transform: rotate(0deg);
+}

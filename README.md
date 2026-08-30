@@ -1,5 +1,9 @@
 # Layout de Site
 
+## Acesso
+
+Veja o projeto publicado em: https://souzax007.github.io/NFTs/
+
 Este projeto é um layout de site simples em HTML, CSS e JavaScript.
 
 ![Ilustração do site](nfts.png)

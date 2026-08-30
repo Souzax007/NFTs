@@ -17,6 +17,8 @@ nav{
     color: #fff;
     padding: 25px 20px;
 }
+.menu-toggle { display: none; width: 42px; height: 42px; border: 1px solid #40D15C; border-radius: 6px; background: transparent; cursor: pointer; }
+.menu-toggle span { display: block; width: 21px; height: 2px; margin: 5px auto; background: #e9fd0b; transition: transform .2s ease, opacity .2s ease; }
 nav .menu ul{
     display: flex;
     gap: 20px;
@@ -492,4 +494,75 @@ main{
     .botao-carrossel {
         display: none;
     }
+}
+
+@media (max-width: 800px) {
+    nav { position: relative; justify-content: space-between; padding-inline: clamp(20px, 4vw, 40px); }
+    main { padding: 0 clamp(20px, 4vw, 40px) 50px; }
+    .menu-toggle { display: block; order: 2; }
+    nav .search { order: 3; }
+    nav .menu {
+        display: none;
+        position: absolute;
+        z-index: 20;
+        top: calc(100% - 10px);
+        left: 20px;
+        right: 20px;
+        padding: 1rem;
+        border: 1px solid #40D15C;
+        border-radius: 8px;
+        background: #1b201b;
+    }
+    nav .menu.aberto { display: block; }
+    nav .menu ul { flex-direction: column; align-items: center; gap: 1.1rem; }
+    .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .triangulo-nfts-container { padding-top: 2rem; gap: 2rem; }
+    .triangulo-nfts-mensagem { text-align: center; align-items: center; order: -1; margin-bottom: 0; }
+    .triangulo-nfts-mensagem .mensagem-grande h2 { font-size: clamp(2.35rem, 7vw, 3.125rem); }
+    .triangulo { width: min(400px, 74vw); aspect-ratio: 1; height: auto; }
+    .triangulo::after { width: 97%; height: 97.5%; }
+    .mensagem-pequena br { display: none; }
+    .fita { position: relative; bottom: auto; margin: 0 -4vw; }
+    .botao-carrossel { width: 50px; height: 50px; }
+}
+
+@media (max-width: 700px) {
+    .nfts-collections { gap: 1.5rem; }
+    .nfts-collections .box-categoria { width: 100%; padding: 7px; }
+}
+
+@media (max-width: 520px) {
+    nav { padding-top: 18px; padding-bottom: 18px; }
+    .logo h1 { font-size: 1.5rem; }
+    nav .search .search-btn { padding: 9px 13px; }
+    .triangulo-nfts { min-height: min(390px, 88vw); }
+    .card { width: clamp(100px, 30vw, 130px); height: clamp(145px, 42vw, 180px); }
+    .triangulo-nfts-mensagem .mensagem-grande h2 { font-size: clamp(2rem, 10vw, 2.45rem); }
+    .mensagem-botao { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+    .mensagem-botao button { flex: 1 1 130px; }
+    .nfts-collections { padding-top: 3rem; }
+    .box-categoria .botao-categoria { flex: 1 1 42%; padding: 9px 10px; }
+    .carrossel { padding-top: 35px; -webkit-mask-image: none; mask-image: none; }
+    .carrossel .item-carrossel { flex-basis: min(62vw, 250px); }
+}
+
+/* Os controles continuam disponíveis no celular para navegar pelo carrossel. */
+@media (max-width: 520px) {
+    .imagens-carrossel {
+        grid-template-columns: 42px minmax(0, 1fr) 42px;
+        gap: .4rem;
+    }
+    .botao-carrossel {
+        display: flex;
+        width: 42px;
+        height: 42px;
+    }
+    .botao-carrossel svg { width: 20px; height: 20px; }
+    .carrossel .item-carrossel { flex-basis: min(58vw, 230px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }

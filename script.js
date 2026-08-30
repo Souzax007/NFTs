@@ -1,3 +1,20 @@
+const menuToggle = document.querySelector('.menu-toggle');
+const menu = document.querySelector('.menu');
+
+if (menuToggle && menu) {
+    menuToggle.addEventListener('click', () => {
+        const aberto = menu.classList.toggle('aberto');
+        menuToggle.setAttribute('aria-expanded', String(aberto));
+        menuToggle.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+    });
+
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+        menu.classList.remove('aberto');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Abrir menu');
+    }));
+}
+
 const fitaTrack = document.querySelector('.fita-track');
 const items = document.querySelectorAll('.fita-item');
 

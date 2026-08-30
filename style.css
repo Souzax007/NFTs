@@ -466,21 +466,24 @@ main{
     display: block;
 }
 .botao-carrossel {
-    width: 42px;
-    height: 42px;
-    border: 0;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #40D15C;
     border-radius: 50%;
-    background: #334E3F;
-    color: #fff;
+    background: #121411;
+    color: #40D15C; /* cor do ícone, vem do stroke="currentColor" do SVG */
     cursor: pointer;
-    font-size: 2rem;
-    line-height: 1;
     flex-shrink: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
-.botao-carrossel:disabled {
-    cursor: default;
-    opacity: .4;
-}
+
+
+
+
 @media (max-width: 520px) {
     .imagens-carrossel {
         grid-template-columns: minmax(0, 1fr);

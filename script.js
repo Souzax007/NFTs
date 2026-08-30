@@ -38,115 +38,193 @@ if (carrossel && botaoEsquerda && botaoDireita) {
         track = document.createElement('div');
         track.className = 'carrossel-track';
         track.style.display = 'flex';
+        track.style.alignItems = 'center';
+        track.style.position = 'relative';
         track.style.willChange = 'transform';
         while (carrossel.firstChild) {
             track.appendChild(carrossel.firstChild);
         }
         carrossel.appendChild(track);
-        carrossel.style.overflow = 'hidden';
+        carrossel.style.overflow = 'visible';
     }
+    track.style.position = 'relative'; // garante que offsetLeft dos itens seja relativo ao track, não a um ancestral distante
 
     const originalHTML = track.innerHTML;
     const originalWidth = track.scrollWidth;
 
-    // duplica para a DIREITA até ter pelo menos 2x a largura original/tela
+    // duplica pra direita
     while (track.scrollWidth < originalWidth * 2 || track.scrollWidth < window.innerWidth * 2) {
         track.innerHTML += originalHTML;
     }
 
-    // agora duplica também para a ESQUERDA (mesma quantidade de blocos que já existem à direita)
-    const blocosDireita = Math.round(track.scrollWidth / originalWidth);
+    // duplica pra esquerda (mesma quantidade de blocos), com um mínimo de
+    // 3 blocos de cada lado pra sempre sobrar margem de segurança no loop
+    const blocosDireita = Math.max(3, Math.round(track.scrollWidth / originalWidth));
     for (let i = 0; i < blocosDireita; i++) {
         track.innerHTML = originalHTML + track.innerHTML;
     }
 
-    const singleBlockWidth = originalWidth;
     const itens = [...track.querySelectorAll('.item-carrossel')];
+    // total de blocos no track = blocosDireita (lado direito, incluindo o original)
+    // + blocosDireita (blocos prependados à esquerda) = blocosDireita * 2
+    const itensOriginaisQtd = Math.round(itens.length / (blocosDireita * 2));
 
-    // posição inicial: começa "no meio" do conteúdo duplicado,
-    // exatamente no início de um bloco original, assim já existe
-    // conteúdo pra esquerda E pra direita desde o primeiro frame
-    let position = -singleBlockWidth * blocosDireita;
-    track.style.transform = `translateX(${position}px)`;
+    // ===== CONFIG DO EFEITO LEQUE (MEIA-LUA) =====
+    const MAX_ROTACAO = 18;
+    const MAX_DESLOCAMENTO_Y = 40;
+    const ESCALA_ATIVA = 1.15;
+    const ESCALA_MINIMA = 0.85;
+    const RAIO_INFLUENCIA = 3;
+    const SOBREPOSICAO = 70; // px de overlap entre os círculos vizinhos — aumente pra ficar mais "colado"
+    const DURACAO_TRANSICAO = 500; // ms — usado tanto pro track quanto pros cards
+    const INTERVALO_AUTO = 3200;   // ms entre avanços automáticos
 
-    let speed = 0.5;
-    let pausado = false;
-    let emTransicaoManual = false;
+    itens.forEach((item) => {
+        item.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`;
+        item.style.transformOrigin = 'bottom center';
+    });
+    track.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`;
 
-    const atualizarDestaque = () => {
-        const centro = carrossel.clientWidth / 2;
-        let itemMaisProximo = itens[0];
-        let menorDistancia = Infinity;
+    // índice atual dentro do array "itens" (que inclui os clones)
+    let indiceAtual = Math.round(blocosDireita * itensOriginaisQtd); // começa no primeiro bloco "real" do meio
+    let temporizadorAutomatico;
+    let travado = false;
 
-        itens.forEach((item) => {
-            const rect = item.getBoundingClientRect();
-            const carrosselRect = carrossel.getBoundingClientRect();
-            const centroItem = rect.left - carrosselRect.left + rect.width / 2;
-            const distancia = Math.abs(centroItem - centro);
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                itemMaisProximo = item;
+    const larguraItem = () => itens[0].getBoundingClientRect().width;
+    const gapPx = parseFloat(getComputedStyle(track).gap) || 16;
+
+    const centralizarPeloIndice = () => {
+        // trava de segurança: nunca deixa indiceAtual sair dos limites do array
+        if (indiceAtual < 0) indiceAtual = 0;
+        if (indiceAtual >= itens.length) indiceAtual = itens.length - 1;
+
+        const item = itens[indiceAtual];
+        const offset = item.offsetLeft - (carrossel.clientWidth - item.offsetWidth) / 2;
+        track.style.transform = `translateX(${-offset}px)`;
+    };
+
+    const aplicarEfeitoLeque = () => {
+        itens.forEach((item, index) => {
+            const distancia = index - indiceAtual;
+            const distanciaAbs = Math.abs(distancia);
+
+            // overlap constante em TODA a fileira, sem exceção — isso é o
+            // que garante que não sobre nenhum espaço vazio entre os itens
+            item.style.marginLeft = index === 0 ? '' : `${-SOBREPOSICAO}px`;
+
+            if (distanciaAbs > RAIO_INFLUENCIA) {
+                item.style.transform = 'translateY(0) rotate(0deg) scale(0.8)';
+                item.style.zIndex = 0;
+                return;
             }
+
+            const fator = distanciaAbs / RAIO_INFLUENCIA;
+            const sinal = Math.sign(distancia);
+
+            const rotacao = sinal * fator * MAX_ROTACAO;
+            const deslocY = fator * MAX_DESLOCAMENTO_Y;
+            const escala = distancia === 0
+                ? ESCALA_ATIVA
+                : ESCALA_ATIVA - (ESCALA_ATIVA - ESCALA_MINIMA) * fator;
+
+            item.style.transform = `translateY(${deslocY}px) rotate(${rotacao}deg) scale(${escala})`;
+            item.style.zIndex = distancia === 0 ? 100 : 100 - distanciaAbs;
         });
 
-        itens.forEach((item) => item.classList.toggle('ativa', item === itemMaisProximo));
+        itens.forEach((item, index) => item.classList.toggle('ativa', index === indiceAtual));
     };
 
-    // realinha a posição para dentro da "zona segura" no meio do conteúdo
-    // duplicado, sem que isso seja perceptível (mesmo truque da fita)
-    const realinhar = () => {
-        const limite = singleBlockWidth * blocosDireita;
-        if (position <= -limite - singleBlockWidth) {
-            position += singleBlockWidth;
-        } else if (position >= -limite + singleBlockWidth) {
-            position -= singleBlockWidth;
+    // depois da transição, se estivermos perto das pontas do array
+    // (zona de clone), salta instantaneamente (sem transição) de volta
+    // pra dentro de uma zona segura, andando de um bloco por vez —
+    // "while" em vez de "if" pra aguentar até saltos grandes (ex: clicar
+    // numa imagem bem na ponta)
+    const corrigirLoop = () => {
+        const margemSegura = itensOriginaisQtd; // um bloco inteiro de buffer em cada ponta
+        let mudou = false;
+
+        while (indiceAtual >= itens.length - margemSegura) {
+            indiceAtual -= itensOriginaisQtd;
+            mudou = true;
         }
-    };
-
-    function animate() {
-        if (!pausado && !emTransicaoManual) {
-            position -= speed;
-            realinhar();
-            track.style.transform = `translateX(${position}px)`;
+        while (indiceAtual < margemSegura) {
+            indiceAtual += itensOriginaisQtd;
+            mudou = true;
         }
-        atualizarDestaque();
-        requestAnimationFrame(animate);
-    }
 
-    animate();
+        if (!mudou) {
+            travado = false;
+            return;
+        }
 
-    // clique: avança/recua visivelmente a largura média de um item,
-    // com transição suave via CSS, e depois volta pro modo automático
-    const larguraMediaItem = () => {
-        const primeiro = itens[0];
-        return primeiro.getBoundingClientRect().width;
+        track.style.transition = 'none';
+        itens.forEach((item) => { item.style.transition = 'none'; });
+
+        aplicarEfeitoLeque();
+        centralizarPeloIndice();
+
+        // força reflow antes de reativar a transição, senão o navegador
+        // "funde" essa mudança instantânea com a próxima animada
+        void track.offsetWidth;
+
+        track.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`;
+        itens.forEach((item) => { item.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`; });
+
+        travado = false;
     };
 
-    const moverManual = (direcao) => {
-        emTransicaoManual = true;
-        pausado = true;
-
-        const passo = larguraMediaItem() + 16; // ajuste 16 conforme o gap/margin dos seus itens
-        position -= direcao * passo;
-
-        track.style.transition = 'transform 0.4s ease';
-        track.style.transform = `translateX(${position}px)`;
-
-        clearTimeout(carrossel._manualTimeout);
-        carrossel._manualTimeout = setTimeout(() => {
-            track.style.transition = 'none';
-            realinhar();
-            track.style.transform = `translateX(${position}px)`;
-            emTransicaoManual = false;
-            pausado = false;
-        }, 400);
+    const mover = (direcao) => {
+        irParaIndice(indiceAtual + direcao);
     };
 
-    botaoDireita.addEventListener('click', () => moverManual(1));
-    botaoEsquerda.addEventListener('click', () => moverManual(-1));
+    const irParaIndice = (novoIndice) => {
+        if (travado || novoIndice === indiceAtual) return;
+        travado = true;
 
-    carrossel.addEventListener('mouseenter', () => { pausado = true; });
-    carrossel.addEventListener('mouseleave', () => {
-        if (!emTransicaoManual) pausado = false;
+        indiceAtual = novoIndice;
+        aplicarEfeitoLeque();
+        centralizarPeloIndice();
+
+        clearTimeout(carrossel._loopTimeout);
+        carrossel._loopTimeout = setTimeout(corrigirLoop, DURACAO_TRANSICAO + 30);
+
+        // reinicia o autoplay a partir da interação do usuário
+        iniciarRotacao();
+    };
+
+    const iniciarRotacao = () => {
+        clearInterval(temporizadorAutomatico);
+        temporizadorAutomatico = setInterval(() => mover(1), INTERVALO_AUTO);
+    };
+
+    botaoDireita.addEventListener('click', () => mover(1));
+    botaoEsquerda.addEventListener('click', () => mover(-1));
+
+    // clicar em qualquer imagem faz ela virar a imagem em destaque
+    itens.forEach((item, idx) => {
+        item.style.cursor = 'pointer';
+        item.style.pointerEvents = 'auto';
+        item.addEventListener('click', () => irParaIndice(idx));
     });
+
+    carrossel.addEventListener('mouseenter', () => clearInterval(temporizadorAutomatico));
+    carrossel.addEventListener('mouseleave', iniciarRotacao);
+
+    window.addEventListener('resize', () => {
+        track.style.transition = 'none';
+        centralizarPeloIndice();
+        void track.offsetWidth;
+        track.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`;
+    });
+
+    // estado inicial, sem transição
+    track.style.transition = 'none';
+    itens.forEach((item) => { item.style.transition = 'none'; });
+    aplicarEfeitoLeque();
+    centralizarPeloIndice();
+    void track.offsetWidth;
+    track.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`;
+    itens.forEach((item) => { item.style.transition = `transform ${DURACAO_TRANSICAO}ms ease`; });
+
+    iniciarRotacao();
 }

@@ -95,6 +95,8 @@ main {
     flex-wrap: wrap;
     width: 100%;
     padding: 3rem 0;
+    position: relative;
+    padding-bottom: 6rem;
     min-height: calc(100vh - 100px);
 }
 
@@ -116,7 +118,7 @@ main {
     width: min(540px, 100%);
     max-width: 600px;
     color: #fff;
-    margin-bottom: 185px;
+    margin-bottom: 0;
 }
 
 .mensagem-pequena {
@@ -305,8 +307,9 @@ main {
     width: 100%;
     height: 50px;
     position: absolute;
-    bottom: 55px;
-    margin-bottom: -59px;
+    left: 0;
+    right: 0;
+    bottom: 48px;
     transform: rotate(-4deg);
     display: flex;
     justify-content: center;
@@ -315,6 +318,7 @@ main {
     color: #100f0f;
     font-weight: 700;
     letter-spacing: 0.06em;
+    z-index: 2;
 }
 
 .fita-track {
@@ -356,6 +360,7 @@ main {
     -webkit-background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
 }
 
 .mensagem-pequena {
@@ -744,4 +749,27 @@ main {
         transition-duration: .01ms !important;
         animation-duration: .01ms !important;
     }
+}
+.participantes{
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px 0px;
+}
+.mensagem-participante h2 {
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-size: 40px;
+    background-image: linear-gradient(90deg, #40D15C 0%, #e9fd0b 80%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 25px;
+}
+.mensagem-participante p{
+    text-align: center;
+    color: #fff;
 }

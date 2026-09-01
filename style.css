@@ -773,3 +773,72 @@ main {
     text-align: center;
     color: #fff;
 }
+
+.participantes-circulos{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    width:100%;
+    padding: 30px;
+}
+.participantes-circulos .circulos {
+    width: 200px;
+    height: 300px;
+    border-radius:100px ;
+    background-color: #2D3A18;
+    margin: 10px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.participantes-circulos .circulos .perfil {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: linear-gradient(#fffefe, #fff) padding-box,
+                linear-gradient(90deg, #40D15C 0%, #e9fd0b 100%) border-box;
+    border: 4px solid transparent;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.participantes-circulos .circulos .perfil img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.participantes-circulos .circulos .nome-redes {
+    width: 135px;
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px;
+}
+.nome-redes .icone-redes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+.nome-redes .icone-redes .icone {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    border: none;
+    overflow: hidden;
+    background: linear-gradient(90deg, #40D15C 0%, #e9fd0b 70%) border-box;
+    border: 4px solid transparent;
+    box-sizing: border-box;
+    color: rgb(107, 107, 107);
+    cursor: pointer;
+}
+.nome-redes p{
+    padding: 10px;
+    color: white;
+}
+
